@@ -22,10 +22,18 @@ class createCategoryRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'nom' => 'required|string|max:255',
+            'nom' => 'required|unique:categories,nom',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'nom.required' => 'la catégorie est requis',
+            'nom.unique' => 'Cette catégorie existe est déjà.'
         ];
     }
 

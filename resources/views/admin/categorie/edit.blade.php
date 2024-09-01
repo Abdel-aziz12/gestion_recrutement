@@ -1,54 +1,59 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.admin')
 
-<head>
-    <link href="{{ url('/css/app.css')}}" rel="stylesheet">
-    <!-- Bootstrap CSS & JS -->
-    <link rel="stylesheet" href="{{ url('/pages/bootstrap.min.css')}}">
+@section('title', 'éditer Catégories')
 
-    <!-- Bootstrap CSS & JS Online
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
-      -->
-    <script src="{{ url('/js/bootstrap.bundle.min.js')}}"></script>
-    <!-- END Bootstrap -->
-    <link rel="stylesheet" href="{{ url('/css/style.css')}}">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorie </title>
-</head>
-
-<body>
-
-
-    <div class="container d-flex flex-column justify-content-center align-items-center vh-100">
-        <div class="col-md-6 text-center mb-3">
-            <h2>Modifié la catégorie</h2>
-        </div>
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <form action="{{ route('categorie.update', $categories->id)}}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <input type="text" name="id" style="display: none;" value="{{ $categories->id}}">
-                        <div class="form-group">
-                            <label for="nom">Profil:</label>
-                            <input type="text" name="nom" id="nom" class="form-control" value="{{ old('nom', $categories->name) }}">
-                            @error('nom')
-                            <div class="text-danger">{{ $message}}</div>
-                            @enderror
-                        </div>
-                        <br>
-                        <button type="submit" class="btn btn-primary">Mettre à jour<i class="fas fa-sync"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
+@section('header-title', 'éditer Catégories')
+@section('breadcrumb')
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0">Catégories</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">edit</a></li>
+                <li class="breadcrumb-item active">Catégories</li>
+            </ol>
+        </div><!-- /.col -->
     </div>
+@endsection
 
-</body>
+@section('content')
+    <section class="content">
+        <div class="container-fluid">
 
-</html>
+            <div class="container-xl">
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">Editer</h3>
+                        <div class="section-intro">Editer une catégorie.</div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+
+                            <div class="app-card-body">
+                                <form class="settings-form" action="{{ route('categories.update', $categories->id) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="id" value="{{ $categories->id }}">
+                                    <div class="mb-3">
+                                        <label for="nom" class="form-label">Profil</label>
+                                        <input type="text" class="form-control" id="nom" name="nom"
+                                            value="{{ old('nom', $categories->nom) }}">
+                                        @error('nom')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <button type="submit" class="btn app-btn-primary">Mettre à jour</button>
+                                </form>
+                            </div><!--//app-card-body-->
+
+                        </div><!--//app-card-->
+                    </div>
+                </div><!--//row-->
+            </div><!--//container-fluid-->
+
+        </div><!-- /.container-fluid -->
+    </section>
+@endsection

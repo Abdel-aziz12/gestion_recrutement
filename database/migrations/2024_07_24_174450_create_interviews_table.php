@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('interviews', function (Blueprint $table) {
             $table->id();
-            $table->datetime('interview_date_time');
+            $table->date('date');
+            $table->time('time');
             $table->integer('cand_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->timestamps();

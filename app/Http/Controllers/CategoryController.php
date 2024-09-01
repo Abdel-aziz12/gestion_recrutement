@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\createCategoryRequest;
 use App\Models\Category;
+use App\Models\Interview;
+use Exception;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -17,7 +19,18 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+         // Récupère la date et l'heure d'aujourd'hui
+        //  $today = now()->toDateString();
+
+        //  // Récupère tous les entretiens pour aujourd'hui avec leurs relations
+        //  $entretiens = Interview::with(['candidatures.category'])
+        //      ->whereDate('date', $today)
+        //      ->get();
+
+        //  // Compte le nombre d'entretiens pour aujourd'hui
+        //  $count = $entretiens->count();
+
+        $categories = Category::with('candidatures')->orderBy('id', 'desc')->paginate(2);
         return view('admin.categorie.index', compact('categories'));
     }
 
@@ -39,17 +52,21 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request)
     {
-        // Création du code à partir des premières lettres du nom
-        $code = strtoupper(substr($request->nom, 0, 3));
+        try {
+            // Création du code à partir des premières lettres du nom
+            $code = strtoupper(substr($request->nom, 0, 3).rand(100, 999));
 
-        // Création de la catégorie
-        $category = Category::create([
-            'name' => $request->nom,
-            'code' => $code,
-            'user_id' => auth()->user()->id, // Assigne l'ID de l'utilisateur actuellement connecté
-        ]);
+            // Création de la catégorie
+            $category = Category::create([
+                'nom' => $request->nom,
+                'code' => $code,
+                'user_id' => auth()->user()->id,
+            ]);
 
-        return redirect()->route('categorie.index')->with('success', 'La catégorie a été insérée avec succès.');
+            return redirect()->route('categories.index')->with('success', 'La catégorie a été insérée avec succès.');
+        } catch (Exception $e) {
+            dd($e);
+        }
     }
 
     /**
@@ -72,8 +89,12 @@ class CategoryController extends Controller
     public function edit($id)
     {
 
-        $categories = Category::findOrFail($id);
-        return view('admin.categorie.edit', compact('categories'));
+        try {
+            $categories = Category::findOrFail($id);
+            return view('admin.categorie.edit', compact('categories'));
+        } catch (Exception $e) {
+            dd($e);
+        }
     }
 
     /**
@@ -83,25 +104,29 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $categorie)
+    public function update(CreateCategoryRequest $request, $id)
     {
 
-        $request->validate([
-            'nom' => 'required|string|max:255',
-        ]);
-        // Création du code à partir des premières lettres du nom
-        $code = strtoupper(substr($request->nom, 0, 3));
-        $nom = ucfirst($request->input('nom'));
+        try {
+            // Récupérer la catégorie que vous souhaitez mettre à jour
+            $categories = Category::findOrFail($id);
 
-        // Création de la catégorie
-        $categorie->update([
-            'name' => $nom,
-            'code' => $code,
-            'user_id' => auth()->user()->id, // Assigne l'ID de l'utilisateur actuellement connecté
-        ]);
-        // Définir un message de succès et rediriger
-        session()->flash('success', 'La catégorie a été modifiée avec succès.');
-        return redirect()->route('categorie.index');
+            // Créer le code à partir des premières lettres du nom
+            $code = strtoupper(substr($request->input('nom'), 0, 3));
+            $nom = ucfirst($request->input('nom'));
+
+            // Création de la catégorie
+            $categories->update([
+                'nom' => $nom,
+                'code' => $code,
+                'user_id' => auth()->user()->id,
+            ]);
+            // Définir un message de succès et rediriger
+            session()->flash('success', 'La catégorie a été modifiée avec succès.');
+            return redirect()->route('categories.index');
+        } catch (Exception $e) {
+            dd($e);
+        }
     }
 
     public function desactivate($id)
@@ -125,10 +150,31 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $categorie = Category::findOrFail($id);
 
-        $categorie->delete();
+        try {
+            $categorie = Category::findOrFail($id);
 
-        return redirect()->back()->with('success', 'La catégorie a été supprimé avec succès.');
+            $categorie->delete();
+
+            session()->flash('success', 'La catégorie a été supprimé avec succès..');
+            return redirect()->route('categories.index');
+        } catch (Exception $e) {
+            dd($e);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        // Récupérer la valeur de recherche depuis la requête
+        $search = $request->input('search');
+        // Effectuer la recherche sur les colonnes 'name', 'code' et 'statut'
+        $categories = Category::where(function ($query) use ($search) {
+            $query->where('nom', 'like', "%$search%")
+                ->orWhere('code', 'like', "%$search%")
+                ->orWhere('is_active', 'like', "%$search%");
+        })->paginate(2);
+
+        // Retourner la vue avec les résultats de recherche
+        return view('admin.categorie.index', compact('categories', 'search'));
     }
 }

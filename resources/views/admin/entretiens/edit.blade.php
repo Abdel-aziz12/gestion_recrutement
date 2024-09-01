@@ -1,73 +1,106 @@
-{{-- <!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ isset($entretien) ? 'Modifier l\'Entretien' : 'Planifier un Entretien' }}</title>
-    <link href="{{ url('/css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url('/pages/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url('/pages/all.min.css') }}">
-</head>
+@section('title', 'Editer Entretiens')
 
-<body>
-
-    <div class="container mt-5">
-        @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-        @endif
-
-        <h2>{{ isset($entretien) ? 'Modifier l\'Entretien' : 'Planifier un Entretien' }}</h2>
-
-        <form action="{{ isset($entretien) ? route('entretiens.update', $entretien->id) : route('entretiens.store') }}" method="POST">
-            @csrf
-            @if(isset($entretien))
-            @method('PUT')
-            @endif
-            <div class="mb-3">
-                <label for="candidat_id" class="form-label">Candidat</label>
-                <select name="candidat_id" id="candidat_id" class="form-select" required>
-                    <option value="" disabled selected>Sélectionner un candidat</option>
-                    @foreach($candidats as $candidat)
-                    <option value="{{ $candidat->id }}" {{ isset($entretien) && $entretien->candidat_id == $candidat->id ? 'selected' : '' }}>
-                        {{ $candidat->name }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="intervieweur_id" class="form-label">Intervieweur</label>
-                <select name="intervieweur_id" id="intervieweur_id" class="form-select" required>
-                    <option value="" disabled selected>Sélectionner un intervieweur</option>
-                    @foreach($intervieweurs as $intervieweur)
-                    <option value="{{ $intervieweur->id }}" {{ isset($entretien) && $entretien->intervieweur_id == $intervieweur->id ? 'selected' : '' }}>
-                        {{ $intervieweur->name }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="interview_date_time" class="form-label">Date & Heure</label>
-                <input type="datetime-local" name="interview_date_time" id="interview_date_time" class="form-control" value="{{ isset($entretien) ? $entretien->interview_date_time : old('date_heure') }}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="statut" class="form-label">Statut</label>
-                <select name="statut" id="statut" class="form-select" required>
-                    <option value="en cours" {{ isset($entretien) && $entretien->statut == 'en cours' ? 'selected' : '' }}>Programmé</option>
-                    <option value="accepté" {{ isset($entretien) && $entretien->statut == 'accepté' ? 'selected' : '' }}>Terminé</option>
-                    <option value="en attente" {{ isset($entretien) && $entretien->statut == 'en attente' ? 'selected' : '' }}>Annulé</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">{{ isset($entretien) ? 'Mettre à Jour' : 'Planifier' }}</button>
-        </form>
+@section('header-title', 'Editer Entretiens')
+@section('breadcrumb')
+    <div class="pagetitle">
+        <!-- <h1>Dashboard</h1> -->
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">edit</a></li>
+                <li class="breadcrumb-item active">Entretiens</li>
+            </ol>
+        </nav>
     </div>
+    @endsection
+    @section('content')
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
 
-    <script src="{{ url('/js/pages/bootstrap.bundle.min.js') }}"></script>
-</body>
+                <div class="container mt-5">
 
-</html> --}}
+                    <div class="container">
+                        <div class="container-xl">
+                            <hr class="mb-4">
+                            <div class="row g-4 settings-section">
+                                <div class="col-12 col-md-4">
+                                    <h3 class="section-title">Modifier</h3>
+                                    <div class="section-intro">Modifier l'entretien d'une candidature.</div>
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <div class="app-card app-card-settings shadow-sm p-4">
+
+                                        <div class="app-card-body">
+                                            <form class="settings-form"
+                                                action="{{ route('entretiens.update', $entretien->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="mb-3">
+                                                    <label for="cand_id" class="form-label">Candidats</label>
+                                                    <input type="text" class="form-control" id="cand_id" name="cand_id"
+                                                        value="{{ old('cand_id', $entretien->candidatures->name . ' ' . $entretien->candidatures->firstname) }}" readonly>
+
+                                                    @error('cand_id')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="date" class="form-label">Date</label>
+                                                    <input type="date" class="form-control" id="date" name="date"
+                                                        value="{{ old('date', $entretien->date) }}">
+                                                    @error('date')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="time" class="form-label">Temps</label>
+                                                    <input type="time" class="form-control" id="time" name="time"
+                                                        value="{{ old('time', $entretien->time) }}">
+                                                    @error('time')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                {{-- <button type="submit" class="btn app-btn-primary">Retour</button> --}}
+                                                <button type="submit" class="btn app-btn-primary">Mettre à jour</button>
+                                            </form>
+                                        </div><!--//app-card-body-->
+
+                                    </div><!--//app-card-->
+                                </div>
+
+                            </div><!--//row-->
+                        </div><!--//container-fluid-->
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </section>
+
+
+    </section>
+    <script>
+        function selectCandidate(candidateName, radioElement) {
+            // Mettre à jour le texte du bouton dropdown
+            const dropdownButton = document.getElementById('dropdownMenuButton');
+            dropdownButton.textContent = candidateName;
+
+            // Afficher le bouton "Programme entretien"
+            const programmeBtn = document.getElementById('programmeBtn');
+            programmeBtn.style.display = 'block';
+
+            // Fermer la liste déroulante
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            const bootstrapDropdown = new bootstrap.Dropdown(dropdownButton);
+            bootstrapDropdown.hide(); // Utilisation de la méthode Bootstrap pour fermer la liste déroulante
+
+            // Appeler la fonction toggleButton si vous avez besoin d'une logique spécifique pour gérer le bouton
+            toggleButton();
+        }
+    </script>
+@endsection

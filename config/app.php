@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
+use App\Helpers\Notifications;
+use Illuminate\Notifications\Notification;
 
 return [
 
@@ -210,6 +212,10 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+
+        'Numberdate' => Notifications::class,
+        'Notifications' => Notifications::class,
+        'NameApplication' => Notifications::class
     ])->toArray(),
 
 ];

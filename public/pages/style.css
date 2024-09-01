@@ -1,0 +1,194 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.principal .gauche {
+    overflow: hidden;
+    background-color: #f4f4f4; /* Couleur de fond pour la colonne gauche */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre pour un effet visuel */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    animation-name: left;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-delay: 1s;
+}
+
+.gauche form {
+    max-width: 100%;
+    width: 100%;
+}
+
+.row .column {
+    flex: 1 1 250px;
+}
+
+.gauche form .title {
+    font-size: 1.5rem;
+    color: #333;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    text-align: center;
+    text-decoration: underline solid #8175d3 5px;
+    margin-top: 10px;
+}
+
+.column .input-box {
+    margin: 15px 0;
+}
+
+.input-box input,
+.input-box select,
+.input-box textarea {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.input-box #phone {
+    width: 108%;
+}
+
+.input-box textarea {
+    padding: 30px 15px;
+    height: 100%;
+    overflow: auto;
+    resize: none;
+}
+
+.input-box span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-box span {
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Style du bouton */
+.btn1 {
+    width: 100%;
+    padding: 12px;
+    background: #1e3d59;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.5s ease;
+}
+
+.btn:hover {
+    background: #1e2a39;
+}
+
+/* Conteneur droite */
+.droite {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Superposition sombre */
+.droite::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Superposition sombre */
+    z-index: 1; /* Assure que l'overlay est derrière le contenu */
+}
+
+.droite img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Assure que l'image couvre toute la colonne sans déformation */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Assure que l'image est derrière la superposition sombre */
+}
+
+/* Assure que le texte est au-dessus de la superposition */
+.droite > * {
+    position: relative;
+    z-index: 2;
+}
+
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.principal {
+    display: flex;
+    height: 100vh;
+    flex-wrap: wrap; /* Allows the columns to wrap on smaller screens */
+}
+
+.gauche,
+.droite {
+    flex: 1 1 100%;
+    padding: 20px;
+}
+
+@media (min-width: 768px) {
+    .gauche,
+    .droite {
+        flex: 1 1 50%; /* Two columns per row on larger screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .title {
+        font-size: 1.5rem; /* Reduce font size for very small screens */
+    }
+
+    .input-box input,
+    .input-box select,
+    .input-box textarea {
+        font-size: 0.875rem; /* Reduce font size for very small screens */
+    }
+
+    .btn1 {
+        font-size: 1rem; /* Reduce font size for very small screens */
+    }
+}
+
+.form-field {
+    outline: 0;
+    transition: 0.2s;
+}
+
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+
